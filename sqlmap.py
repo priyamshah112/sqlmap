@@ -1,1 +1,1 @@
-print("sqlmap from AMP")
+print("sqlmap from AMP Tech.")
