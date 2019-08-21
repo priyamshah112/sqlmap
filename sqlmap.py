@@ -1,0 +1,1 @@
+print("sqlmap from AMP")
